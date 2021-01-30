@@ -1,26 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import { Pagination } from "./components/Pagination";
+import { Post } from "./components/Post";
 
-function App() {
+const TARGET_URL = 'https://jsonplaceholder.typicode.com/posts';
+
+export default function App() {
+  const [posts, setPosts] = useState([])
+  const [error, setError] = useState('')
+  
+  useEffect(() => {
+    fetch(TARGET_URL).then(async res=>{
+      setPosts(await res.json())
+    }).catch(err=>setError(err.message))
+  }, [])
+
+  if (error) return <p>{error}</p>
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <>
+      <div className="App"> 
+        <Pagination 
+          data={posts} 
+          title='Posts'
+          pageLimit={5}
+          dataLimit={10}
+        />
+      </div>
+      </>
   );
 }
-
-export default App;
